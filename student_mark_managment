@@ -1,0 +1,104 @@
+import mysql.connector as mysql
+mydb=mysql.connect(host="localhost",user="root",password="Sam@8122956131",database="student")
+cursor=mydb.cursor(buffered=True)
+
+
+def add_student():
+    while 1:
+        print(" ")
+
+        student_id = input(str("student_id="))
+        student_name=input(str("student name:"))
+        department = input(str("department:"))
+        m1 = input(str("mark1:"))
+        m2 = input(str("mark2:"))
+        m3 = input(str("mark3:"))
+        m4 = input(str("mark4:"))
+        m5 = input(str("mark5:"))
+        total = int(m1)+int(m2)+int(m3)+int(m4)+int(m5)
+        avg = total / 5
+        if avg > 90:
+            print("grade-S")
+            grade = "grade-S"
+        elif 90 > avg > 80:
+            print("grade-A")
+            grade = "grade-A"
+        elif 80 > avg > 70:
+            print("grade-B")
+            grade = "grade-B"
+        elif 70 > avg > 60:
+            print("grade-C")
+            grade = "grade-C"
+        elif 60 > avg > 50:
+            print("grade-D")
+            grade = "grade-D"
+        else:
+            print("grade-E")
+            grade = "grade-E"
+
+        qurey_values = (student_id, student_name, department, m1, m2, m3, m4, m5, avg, grade)
+        cursor.execute("INSERT INTO student(student_id,student_name,department,m1,m2,m3,m4,m5,avg,grade) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",qurey_values)
+        mydb.commit()
+        print("student name", student_name, "student id", student_id, "added in the database")
+        main()
+
+
+def del_student():
+    print("1.delete entire student")
+    print("2.delete selected student")
+    user=input(str("select the option:\t"))
+    if user=="1":
+        cursor.execute("truncate student")
+        print("entire students record were deleted!!!!!!")
+    elif user=="2":
+        c1=str(input("enter the condition:"))
+        condition="DELETE FROM STUDENT WHERE "+c1
+        cursor.execute(condition)
+
+
+def get_all_students():
+    cursor.execute("SELECT * FROM STUDENT")
+    all_student=cursor.fetchall()
+    print(all_student)
+
+def get_a_student():
+    c=str(input("enter the condition:"))
+    con="SELECT * FROM STUDENT WHERE "+c
+    print(con)
+    cursor.execute(con)
+    all_student=cursor.fetchall()
+    print(all_student)
+def update_student():
+    c1=str(input("enter what to update:"))
+    c2=str(input("enter replace by:"))
+    sql = "UPDATE student SET "+c1+" WHERE "+c2
+    update=cursor.execute(sql)
+    print(update)
+def main():
+
+    while 1:
+        print("")
+        print("********************Welcome to Student Management System*****************")
+        print("")
+        print("1.add student")
+        print("2.edit student")
+        print("3.delete student")
+        print("4.get all student details")
+        print("5.get a student detail")
+        print("6.exit")
+        user_input=input(str("please select the option:"))
+        if user_input =="1":
+
+            add_student()
+
+        elif user_input== "2":
+            update_student()
+        elif user_input== "3":
+            del_student()
+        elif user_input== "4":
+            get_all_students()
+        elif user_input== "5":
+            get_a_student()
+        elif user_input== "6":
+            break
+main()
